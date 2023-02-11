@@ -1,7 +1,7 @@
 /*********
   Rui Santos
   Complete project details at https://randomnerdtutorials.com  
-  edited code for remote control with EEEbot
+  edited code for remote control with EEEbot by Harshal Kanumuri 
 *********/
 
 #include <WiFi.h>
@@ -62,31 +62,6 @@ void sendData(int16_t leftMotorspeed, int16_t rightMotorspeed, int16_t servoAngl
   Wire.endTransmission();   // stop transmitting
 }
 
-void acc() {
-  Wire.beginTransmission(0x68);
-  Wire.write(0x1A);  // Register for low-passfilter
-  Wire.write(0x05);  // Bandwidth 10Hz
-  Wire.endTransmission();
-
-  Wire.beginTransmission(0x68);
-  Wire.write(0x1C); // register for adjusting scale
-  Wire.write(0x03); // +/- 16g Full Scale Range
-  Wire.endTransmission();
-
-  Wire.beginTransmission(0x68);
-  Wire.write(0x3B);
-  Wire.endTransmission(); 
-  Wire.requestFrom(0x68,6);
-  int16_t AccXLSB = Wire.read() << 8 | Wire.read();
-  int16_t AccYLSB = Wire.read() << 8 | Wire.read();
-  int16_t AccZLSB = Wire.read() << 8 | Wire.read();
-
-  AccX=(AccXLSB/2048) ;
-  AccY=(AccYLSB/2048) ;
-  AccZ=(AccZLSB/2048) ;
-  AngleRoll = atan(AccY/sqrt(AccX*AccX+AccZ*AccZ)) * Rad2Deg;
-  AnglePitch=-atan(AccX/sqrt(AccY*AccY+AccZ*AccZ)) * Rad2Deg;
-}
 
 // LED Pin
 //const int ledPin = 4;
@@ -185,6 +160,7 @@ void reconnect() {
       client.subscribe("esp32/motorspeed");
       client.subscribe("esp32/right");
       client.subscribe("esp32/slider");
+      client.subscribe("esp32/Hcsr04");
 
     } else {
       Serial.print("failed, rc=");
@@ -231,15 +207,18 @@ void loop() {
         
     char temp1[16];
     dtostrf(enc1_count, 1, 2, temp1);
-    Serial.print("Temperature: ");
+    Serial.print("Encoder2: ");
     Serial.println(temp1);
     client.publish("esp32/enc1", temp1);
 
     char temp2[16];
     dtostrf(enc2_count, 1, 2, temp2);
-    Serial.print("Temperature: ");
+    Serial.print("Encoder2: ");
     Serial.println(temp2);
     client.publish("esp32/enc2", temp2);
+    
+   
+    
     
   
  }
