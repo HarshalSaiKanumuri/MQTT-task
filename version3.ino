@@ -217,8 +217,12 @@ void loop() {
     Serial.println(temp2);
     client.publish("esp32/enc2", temp2);
     
-   
-    
+    x = hc.dist();
+    char temp3[16];
+    dtostrf(x, 1, 2, temp3);
+    Serial.print("distance: ");
+    Serial.println(temp3);
+    client.publish("esp32/Hcsr04" temp3);  
     
   
  }
